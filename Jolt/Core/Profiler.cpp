@@ -15,7 +15,7 @@ JPH_SUPPRESS_WARNINGS_STD_END
 
 JPH_NAMESPACE_BEGIN
 
-#if defined(JPH_EXTERNAL_PROFILE) && defined(JPH_SHARED_LIBRARY)
+#if defined(JPH_EXTERNAL_PROFILE)
 
 ProfileStartMeasurementFunction ProfileStartMeasurement = [](const char *, uint32, uint8 *) { };
 ProfileEndMeasurementFunction ProfileEndMeasurement = [](uint8 *) { };
@@ -30,8 +30,7 @@ ProfileEndMeasurementFunction ProfileEndMeasurement = [](uint8 *) { };
 
 Profiler *Profiler::sInstance = nullptr;
 
-#ifdef JPH_SHARED_LIBRARY
-	static thread_local ProfileThread *sInstance = nullptr;
+	static ProfileThread *sInstance = nullptr;
 
 	ProfileThread *ProfileThread::sGetInstance()
 	{
@@ -42,9 +41,6 @@ Profiler *Profiler::sInstance = nullptr;
 	{
 		sInstance = inInstance;
 	}
-#else
-	thread_local ProfileThread *ProfileThread::sInstance = nullptr;
-#endif
 
 bool ProfileMeasurement::sOutOfSamplesReported = false;
 
