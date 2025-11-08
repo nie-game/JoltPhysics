@@ -272,17 +272,11 @@ public:
 	public:
 		inline GrantActiveBodiesAccess(bool inAllowActivation, bool inAllowDeactivation)
 		{
-			JPH_ASSERT(!sGetOverrideAllowActivation());
-			sSetOverrideAllowActivation(inAllowActivation);
-
-			JPH_ASSERT(!sGetOverrideAllowDeactivation());
-			sSetOverrideAllowDeactivation(inAllowDeactivation);
 		}
 
 		inline ~GrantActiveBodiesAccess()
 		{
-			sSetOverrideAllowActivation(false);
-			sSetOverrideAllowDeactivation(false);
+
 		}
 	};
 #endif
@@ -377,17 +371,6 @@ private:
 
 	/// Cached broadphase layer interface
 	const BroadPhaseLayerInterface *mBroadPhaseLayerInterface = nullptr;
-
-#ifdef JPH_ENABLE_ASSERTS
-	static bool						sGetOverrideAllowActivation();
-	static void						sSetOverrideAllowActivation(bool inValue);
-
-	static bool						sGetOverrideAllowDeactivation();
-	static void						sSetOverrideAllowDeactivation(bool inValue);
-
-	/// Debug system that tries to limit changes to active bodies during the PhysicsSystem::Update()
-	bool							mActiveBodiesLocked = false;
-#endif
 };
 
 JPH_NAMESPACE_END
