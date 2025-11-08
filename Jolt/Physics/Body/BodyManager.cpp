@@ -528,8 +528,6 @@ void BodyManager::ActivateBodies(const BodyID *inBodyIDs, int inNumber)
 
 	UniqueLock lock(mActiveBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::ActiveBodiesList));
 
-	JPH_ASSERT(!mActiveBodiesLocked || sOverrideAllowActivation);
-
 	for (const BodyID *b = inBodyIDs, *b_end = inBodyIDs + inNumber; b < b_end; b++)
 		if (!b->IsInvalid())
 		{
@@ -564,8 +562,6 @@ void BodyManager::DeactivateBodies(const BodyID *inBodyIDs, int inNumber)
 		return;
 
 	UniqueLock lock(mActiveBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::ActiveBodiesList));
-
-	JPH_ASSERT(!mActiveBodiesLocked || sOverrideAllowDeactivation);
 
 	for (const BodyID *b = inBodyIDs, *b_end = inBodyIDs + inNumber; b < b_end; b++)
 		if (!b->IsInvalid())
@@ -607,8 +603,6 @@ void BodyManager::SetMotionQuality(Body &ioBody, EMotionQuality inMotionQuality)
 	if (mp != nullptr && mp->GetMotionQuality() != inMotionQuality)
 	{
 		UniqueLock lock(mActiveBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::ActiveBodiesList));
-
-		JPH_ASSERT(!mActiveBodiesLocked);
 
 		bool is_active = ioBody.IsActive();
 		if (is_active && mp->GetMotionQuality() == EMotionQuality::LinearCast)
@@ -867,8 +861,6 @@ void BodyManager::RestoreBodyState(Body &ioBody, StateRecorder &inStream)
 	if (is_active != ioBody.IsActive())
 	{
 		UniqueLock lock(mActiveBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::ActiveBodiesList));
-
-		JPH_ASSERT(!mActiveBodiesLocked || sOverrideAllowActivation);
 
 		if (is_active)
 			AddBodyToActiveBodies(ioBody);

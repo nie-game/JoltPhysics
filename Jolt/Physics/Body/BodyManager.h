@@ -262,25 +262,6 @@ public:
 	void							Draw(const DrawSettings &inSettings, const PhysicsSettings &inPhysicsSettings, DebugRenderer *inRenderer, const BodyDrawFilter *inBodyFilter = nullptr);
 #endif // JPH_DEBUG_RENDERER
 
-#ifdef JPH_ENABLE_ASSERTS
-	/// Lock the active body list, asserts when Activate/DeactivateBody is called.
-	void							SetActiveBodiesLocked(bool inLocked)		{ mActiveBodiesLocked = inLocked; }
-
-	/// Per thread override of the locked state, to be used by the PhysicsSystem only!
-	class GrantActiveBodiesAccess
-	{
-	public:
-		inline GrantActiveBodiesAccess(bool inAllowActivation, bool inAllowDeactivation)
-		{
-		}
-
-		inline ~GrantActiveBodiesAccess()
-		{
-
-		}
-	};
-#endif
-
 #ifdef JPH_DEBUG
 	/// Validate if the cached bounding boxes are correct for all active bodies
 	void							ValidateActiveBodyBounds();
