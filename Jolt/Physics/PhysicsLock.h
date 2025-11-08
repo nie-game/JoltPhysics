@@ -32,82 +32,30 @@ using PhysicsLockContext = const BodyManager *;
 class JPH_EXPORT PhysicsLock
 {
 public:
-#ifdef JPH_ENABLE_ASSERTS
-	/// Call before taking the lock
-	static inline void			sCheckLock(PhysicsLockContext inContext, EPhysicsLockTypes inType)
-	{
-		uint32 &mutexes = sGetLockedMutexes(inContext);
-		JPH_ASSERT(uint32(inType) > mutexes, "A lock of same or higher priority was already taken, this can create a deadlock!");
-		mutexes = mutexes | uint32(inType);
-	}
-
-	/// Call after releasing the lock
-	static inline void			sCheckUnlock(PhysicsLockContext inContext, EPhysicsLockTypes inType)
-	{
-		uint32 &mutexes = sGetLockedMutexes(inContext);
-		JPH_ASSERT((mutexes & uint32(inType)) != 0, "Mutex was not locked!");
-		mutexes = mutexes & ~uint32(inType);
-	}
-#endif // !JPH_ENABLE_ASSERTS
 
 	template <class LockType>
 	static inline void			sLock(LockType &inMutex JPH_IF_ENABLE_ASSERTS(, PhysicsLockContext inContext, EPhysicsLockTypes inType))
 	{
-		JPH_IF_ENABLE_ASSERTS(sCheckLock(inContext, inType);)
 		inMutex.lock();
 	}
 
 	template <class LockType>
 	static inline void			sUnlock(LockType &inMutex JPH_IF_ENABLE_ASSERTS(, PhysicsLockContext inContext, EPhysicsLockTypes inType))
 	{
-		JPH_IF_ENABLE_ASSERTS(sCheckUnlock(inContext, inType);)
 		inMutex.unlock();
 	}
 
 	template <class LockType>
 	static inline void			sLockShared(LockType &inMutex JPH_IF_ENABLE_ASSERTS(, PhysicsLockContext inContext, EPhysicsLockTypes inType))
 	{
-		JPH_IF_ENABLE_ASSERTS(sCheckLock(inContext, inType);)
 		inMutex.lock_shared();
 	}
 
 	template <class LockType>
 	static inline void			sUnlockShared(LockType &inMutex JPH_IF_ENABLE_ASSERTS(, PhysicsLockContext inContext, EPhysicsLockTypes inType))
 	{
-		JPH_IF_ENABLE_ASSERTS(sCheckUnlock(inContext, inType);)
 		inMutex.unlock_shared();
 	}
-
-#ifdef JPH_ENABLE_ASSERTS
-private:
-	struct LockData
-	{
-		uint32					mLockedMutexes = 0;
-		PhysicsLockContext		mContext = nullptr;
-	};
-
-	// Helper function to find the locked mutexes for a particular context
-	static uint32 &				sGetLockedMutexes(PhysicsLockContext inContext)
-	{
-		static thread_local LockData sLocks[4];
-
-		// If we find a matching context we can use it
-		for (LockData &l : sLocks)
-			if (l.mContext == inContext)
-				return l.mLockedMutexes;
-
-		// Otherwise we look for an entry that is not in use
-		for (LockData &l : sLocks)
-			if (l.mLockedMutexes == 0)
-			{
-				l.mContext = inContext;
-				return l.mLockedMutexes;
-			}
-
-		JPH_ASSERT(false, "Too many physics systems locked at the same time!");
-		return sLocks[0].mLockedMutexes;
-	}
-#endif // !JPH_ENABLE_ASSERTS
 };
 
 /// Helper class that is similar to std::unique_lock

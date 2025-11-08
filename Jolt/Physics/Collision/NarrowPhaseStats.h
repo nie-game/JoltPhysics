@@ -21,6 +21,8 @@ JPH_SUPPRESS_WARNING_POP
 
 #ifdef JPH_TRACK_NARROWPHASE_STATS
 
+#error thread_local
+
 JPH_NAMESPACE_BEGIN
 
 /// Structure that tracks narrow phase timing information for a particular combination of shapes

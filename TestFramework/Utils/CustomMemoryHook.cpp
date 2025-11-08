@@ -8,6 +8,8 @@
 
 #ifdef JPH_CUSTOM_MEMORY_HOOK_ENABLED
 
+#error thread_local
+
 // Global to turn checking on/off
 static bool sEnableCustomMemoryHook = false;
 

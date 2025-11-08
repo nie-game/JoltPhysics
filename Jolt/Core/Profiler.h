@@ -86,6 +86,8 @@ JPH_SUPPRESS_WARNING_POP
 
 #elif defined(JPH_PROFILE_ENABLED)
 
+#error thread_local
+
 JPH_NAMESPACE_BEGIN
 
 class ProfileSample;

@@ -23,8 +23,8 @@
 JPH_NAMESPACE_BEGIN
 
 #ifdef JPH_ENABLE_ASSERTS
-	static thread_local bool sOverrideAllowActivation = false;
-	static thread_local bool sOverrideAllowDeactivation = false;
+	static bool sOverrideAllowActivation = false;
+	static bool sOverrideAllowDeactivation = false;
 
 	bool BodyManager::sGetOverrideAllowActivation()
 	{
@@ -706,8 +706,6 @@ BodyManager::MutexMask BodyManager::GetMutexMask(const BodyID *inBodies, int inN
 
 void BodyManager::LockRead(MutexMask inMutexMask) const
 {
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckLock(this, EPhysicsLockTypes::PerBody));
-
 	int index = 0;
 	for (MutexMask mask = inMutexMask; mask != 0; mask >>= 1, index++)
 		if (mask & 1)
@@ -716,8 +714,6 @@ void BodyManager::LockRead(MutexMask inMutexMask) const
 
 void BodyManager::UnlockRead(MutexMask inMutexMask) const
 {
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckUnlock(this, EPhysicsLockTypes::PerBody));
-
 	int index = 0;
 	for (MutexMask mask = inMutexMask; mask != 0; mask >>= 1, index++)
 		if (mask & 1)
@@ -726,8 +722,6 @@ void BodyManager::UnlockRead(MutexMask inMutexMask) const
 
 void BodyManager::LockWrite(MutexMask inMutexMask) const
 {
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckLock(this, EPhysicsLockTypes::PerBody));
-
 	int index = 0;
 	for (MutexMask mask = inMutexMask; mask != 0; mask >>= 1, index++)
 		if (mask & 1)
@@ -736,8 +730,6 @@ void BodyManager::LockWrite(MutexMask inMutexMask) const
 
 void BodyManager::UnlockWrite(MutexMask inMutexMask) const
 {
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckUnlock(this, EPhysicsLockTypes::PerBody));
-
 	int index = 0;
 	for (MutexMask mask = inMutexMask; mask != 0; mask >>= 1, index++)
 		if (mask & 1)
@@ -746,7 +738,6 @@ void BodyManager::UnlockWrite(MutexMask inMutexMask) const
 
 void BodyManager::LockAllBodies() const
 {
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckLock(this, EPhysicsLockTypes::PerBody));
 	mBodyMutexes.LockAll();
 
 	PhysicsLock::sLock(mBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::BodiesList));
@@ -756,7 +747,6 @@ void BodyManager::UnlockAllBodies() const
 {
 	PhysicsLock::sUnlock(mBodiesMutex JPH_IF_ENABLE_ASSERTS(, this, EPhysicsLockTypes::BodiesList));
 
-	JPH_IF_ENABLE_ASSERTS(PhysicsLock::sCheckUnlock(this, EPhysicsLockTypes::PerBody));
 	mBodyMutexes.UnlockAll();
 }
 

@@ -8,6 +8,8 @@
 
 #ifdef JPH_TRACK_NARROWPHASE_STATS
 
+#error thread_local
+
 JPH_NAMESPACE_BEGIN
 
 NarrowPhaseStat	NarrowPhaseStat::sCollideShape[NumSubShapeTypes][NumSubShapeTypes];
