@@ -319,10 +319,6 @@ EPhysicsUpdateError PhysicsSystem::Update(float inDeltaTime, int inCollisionStep
 
 			if (is_first_step)
 			{
-			#ifdef JPH_ENABLE_ASSERTS
-				// Don't allow write operations to the active bodies list
-				mBodyManager.SetActiveBodiesLocked(true);
-			#endif
 
 				// Store the number of active bodies at the start of the step
 				step.mNumActiveBodiesAtStepStart = mBodyManager.GetNumActiveBodies(EBodyType::RigidBody);
@@ -660,10 +656,6 @@ EPhysicsUpdateError PhysicsSystem::Update(float inDeltaTime, int inCollisionStep
 	// Unlock all constraints
 	mConstraintManager.UnlockAllConstraints();
 
-#ifdef JPH_ENABLE_ASSERTS
-	// Allow write operations to the active bodies list
-	mBodyManager.SetActiveBodiesLocked(false);
-#endif
 
 	// Unlock all bodies
 	mBodyManager.UnlockAllBodies();
